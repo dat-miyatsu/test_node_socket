@@ -41,7 +41,6 @@ if (cluster.isMaster) {
 	// "real" IP number conversion, this function is on par in terms of
 	// worker index distribution only much faster.
 	var worker_index = function(ip, len) {
-    console.log('ip===', ip);
 		return farmhash.fingerprint32(ip) % len; // Farmhash is the fastest and works with IPv6, too
 	};
 
@@ -51,9 +50,9 @@ if (cluster.isMaster) {
 			// We received a connection and need to pass it to the appropriate
 			// worker. Get the worker for this connection's source IP and pass
       // it the connection.
+      var clientIp = connection.headers['x-forwarded-for'] || connection.remoteAddress;
       var workerIndex = worker_index(connection.remoteAddress, num_processes);
-      console.log('workerIndex====', workerIndex);
-
+      console.log('workerIndex', workerIndex, clientIp);
 			var worker = workers[workerIndex];
 			worker.send('sticky-session:connection', connection);
 		})
@@ -76,7 +75,12 @@ if (cluster.isMaster) {
   io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
   
   io.on('connection', function(socket) {
-		console.log('Người dùng đã kết nối tới ứng dụng with worker: ' + cluster.worker.id);
+    console.log('Người dùng đã kết nối tới ứng dụng with worker: ' + cluster.worker.id);
+    console.log('headers====', JSON.stringify(socket.handshake.headers));
+    // var clientIp = socket.request.connection.remoteAddress;
+		// var address = socket.handshake.address;
+    // console.log('New connection from ' + address + ' with IP: ' + clientIp);
+    
 		socket.on('disconnect', function() {
 			console.log('Người dùng đã ngắt kết nối tới ứng dụng');
 		});
