@@ -24,10 +24,11 @@
   "dependencies": {
     "cluster": "^0.7.7",
     "express": "^4.15.2",
+    "farmhash": "^2.0.0",
     "http": "0.0.0",
+    "random-ipv6": "^1.0.2",
     "socket.io": "^1.7.3",
     "sticky-session": "^1.1.2",
-    "farmhash": "^2.0.0",
-    "random-ipv6": "^1.0.2"
+    "sticky-session-reverse-proxy": "^1.0.3"
   }
 }

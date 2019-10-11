@@ -1,9 +1,10 @@
-var sticky = require('sticky-session'),
+var sticky = require('sticky-session-reverse-proxy'),
 	http = require('http'),
 	express = require('express'),
 	socketIO = require('socket.io'),
 	cluster = require('cluster'),
-	port = process.env.PORT || 3001;
+	port = process.env.PORT || 3002;
+var numCPUs = require('os').cpus().length;
 
 var app = express(),
 	io;
@@ -14,7 +15,12 @@ io = socketIO(server);
 
 // Add your socket.IO connection logic here
 
-if (!sticky.listen(server, port)) {
+if (
+	!sticky.listen(server, port, {
+		workers: numCPUs,
+		proxyHeader: 'x-forwarded-for', //header to read for IP
+	})
+) {
 	server.once('listening', function() {
 		console.log('Server started on port ' + port);
 	});
@@ -35,6 +41,7 @@ if (!sticky.listen(server, port)) {
 		var clientIp = socket.request.connection.remoteAddress;
 		var address = socket.handshake.address;
 		console.log('New connection from ' + address + ' with IP: ' + clientIp);
+		console.log('headers====', JSON.stringify(socket.handshake.headers));
 
 		socket.on('disconnect', function() {
 			console.log('Người dùng đã ngắt kết nối tới ứng dụng');
