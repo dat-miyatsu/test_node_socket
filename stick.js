@@ -2,7 +2,6 @@ var express = require('express'),
 	cluster = require('cluster'),
 	net = require('net'),
 	sio = require('socket.io'),
-	sio_redis = require('socket.io-redis'),
 	farmhash = require('farmhash');
 
 var port = 3001,
@@ -68,11 +67,6 @@ if (cluster.isMaster) {
 	// Don't expose our internal server to the outside.
 	var server = app.listen(0, 'localhost'),
 		io = sio(server);
-
-	// Tell Socket.IO to use the redis adapter. By default, the redis
-	// server is assumed to be on localhost:6379. You don't have to
-	// specify them explicitly unless you want to change them.
-  io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
   
   io.on('connection', function(socket) {
     console.log('Người dùng đã kết nối tới ứng dụng with worker: ' + cluster.worker.id);
