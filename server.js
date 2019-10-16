@@ -1,4 +1,4 @@
-var sticky = require('sticky-session-reverse-proxy'),
+var sticky = require('sticky-session'),
 	http = require('http'),
 	express = require('express'),
 	socketIO = require('socket.io'),
@@ -16,10 +16,7 @@ io = socketIO(server);
 // Add your socket.IO connection logic here
 
 if (
-	!sticky.listen(server, port, {
-		workers: numCPUs,
-		proxyHeader: 'x-forwarded-for', //header to read for IP
-	})
+	!sticky.listen(server, port)
 ) {
 	server.once('listening', function() {
 		console.log('Server started on port ' + port);
