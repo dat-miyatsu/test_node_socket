@@ -23,7 +23,7 @@
   "homepage": "https://github.com/maxprog/socket.io-node.js-cluster#readme",
   "dependencies": {
     "cluster": "^0.7.7",
-    "express": "^4.15.2",
+    "express": "^4.17.3",
     "farmhash": "^2.0.0",
     "http": "0.0.0",
     "random-ipv6": "^1.0.2",
